@@ -1,13 +1,15 @@
 import requests
 
 moeda = input('Digite a moeda: ').upper()
+print('')
 
 res = requests.get( f"https://api.binance.com/api/v3/ticker/price?symbol={moeda}")
 
 dados = res.json()
+preco = float(dados["price"])
 
 print(f'Moeda: {dados["symbol"]}')
-print(f'Preço: R$ {dados["price"]}')
+print (f'Preço: R$ {preco:.2f}')
 
 
 
@@ -15,6 +17,7 @@ print(f'Preço: R$ {dados["price"]}')
 intervalo = input('Defina o intervalo: ')
 
 limite = int(input('Defina um limite da candles: '))
+print('')
 
 candle = requests.get(f"https://api.binance.com/api/v3/klines?symbol={moeda}&interval={intervalo}&limit={limite}")
 
