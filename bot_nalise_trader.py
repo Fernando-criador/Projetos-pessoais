@@ -1,4 +1,5 @@
 import requests
+import pandas as pd
 
 moeda = input('Digite a moeda: ').upper()
 print('')
@@ -23,6 +24,30 @@ candle = requests.get(f"https://api.binance.com/api/v3/klines?symbol={moeda}&int
 
 dado2 = candle.json()
 
+df = pd.DataFrame(dado2,columns=[
+    'tempo_abertura',
+    'abertura',
+    'maxima',
+    'minima',
+    'fechamento',
+    'volume',
+    'tempo_fechamento',
+    'volume_quote',
+    'numero_trades',
+    'volume_compra',
+    'volume_quote_compra',
+    'ignore'
+])
+
+df['abertura']   =  df['abertura'].astype(float)
+df['maxima']     =  df['maxima'].astype(float)
+df['minima']     =  df['minima'].astype(float)
+df['fechamento'] =  df['fechamento'].astype(float)
+df['volume']     =  df['volume'].astype(float)
+
+
+print(df)
+
 fechamento_s = []
 
 for candle in dado2:
@@ -45,7 +70,17 @@ for candle in dado2:
 
 periodo = int(input('Coloque o periodo para calcular a Média Móvel Simples(SMA): '))
 
-if len(fechamento_s) >= periodo:
+df['SMA'] = df['fechamento'].rolling(periodo).mean()
+
+
+
+print(df[['fechamento','SMA']])
+
+
+
+
+
+'''if len(fechamento_s) >= periodo:
     soma = sum(fechamento_s[-periodo:])
     sma = soma/periodo
 
@@ -55,10 +90,10 @@ else:
     print('Não há candle suficiente para clacuklar a SMA.\n')
 
 if preco > sma:
-    print(f'A cotação atual está  em R$ {(sma - preco):.2f} acima do SMA. \n')
+    print(f'A cotação atual está  em R$ {(preco - sma):.2f} acima do SMA. \n')
 
 elif preco < sma:
     print(f'A cotação atual está  em R$ {(sma - preco):.2f} abaixo do SMA\n')
 
 else:
-    print(f'A cotação está igual a SMA.\n')
+    print(f'A cotação está igual a SMA.\n')'''
